@@ -52,6 +52,72 @@ class Lonely_cat_ft extends EE_Fieldtype {
 		
 	}
 	
+	function replace_category_name($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $cat_name;
+	}
+
+	function replace_category_id($data, $params = array(), $tagdata = FALSE)
+	{
+    if ( ! $data) return '';
+		return $data;
+	}
+
+	function replace_category_group($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $group_id;
+	}
+	
+	function replace_category_parent($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $parent_id;
+	}
+	
+	function replace_category_url_title($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $cat_url_title;
+	}
+	
+	function replace_category_description($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $cat_description;
+	}
+	
+	function replace_category_image($data, $params = array(), $tagdata = FALSE)
+	{    
+    if ( ! $data) return '';
+    
+    $category_info = $this->_get_category($data);
+    extract($category_info);
+
+		return $cat_image;
+	}
+	
 	function validate()
 	{
 	  return TRUE;
@@ -59,7 +125,7 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	
 	function save($data=0)
 	{	  
-	  $cats = !$data ? array() : (array) $data;
+	  $cats = ! $data ? array() : (array) $data;
 	  
 	  $this->EE->api_channel_categories->cat_parents = $cats;
 
@@ -95,6 +161,22 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	  
 	  return $cats;
 
+	}
+	
+	function _get_category($cat_id=0)
+	{
+	  if ( ! isset($this->EE->session->cache[__CLASS__]['category']))
+    {
+      $query = $this->EE->db->where('cat_id', $cat_id)->get('categories');
+      
+      if ($query->num_rows() > 0)
+      {
+        $this->EE->session->cache[__CLASS__]['category'] = $query->row_array();
+      }
+    }
+    
+    return $this->EE->session->cache[__CLASS__]['category'];
+    
 	}
 	
 }
