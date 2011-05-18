@@ -26,10 +26,12 @@ class Lonely_cat_ft extends EE_Fieldtype {
     $this->EE->load->library('api');
     $this->EE->api->instantiate(array('channel_categories', 'channel_structure'));
 
+    $channel_id = $this->EE->input->get_post('channel_id');
+
     // If there is no category set, fetch the default category if set.
-    if ( ! $data)
+    if ( ! $data && $channel_id)
     {
-      $data = $this->EE->api_channel_structure->get_channel_info($this->EE->input->get_post('channel_id'))->row('deft_category');
+      $data = $this->EE->api_channel_structure->get_channel_info($channel_id)->row('deft_category');
     }
     
 
