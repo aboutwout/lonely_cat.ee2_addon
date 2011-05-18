@@ -165,17 +165,17 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	
 	function _get_category($cat_id=0)
 	{
-	  if ( ! isset($this->EE->session->cache[__CLASS__]['category']))
+	  if ( ! isset($this->EE->session->cache[__CLASS__][$cat_id]))
     {
       $query = $this->EE->db->where('cat_id', $cat_id)->get('categories');
       
       if ($query->num_rows() > 0)
       {
-        $this->EE->session->cache[__CLASS__]['category'] = $query->row_array();
+        $this->EE->session->cache[__CLASS__][$cat_id] = $query->row_array();
       }
     }
     
-    return $this->EE->session->cache[__CLASS__]['category'];
+    return $this->EE->session->cache[__CLASS__][$cat_id];
     
 	}
 	
