@@ -40,7 +40,7 @@ class Lonely_cat_ft extends EE_Fieldtype {
 
     $cat_group = NULL;
  		 		
-    $options['0'] = $this->EE->lang->line('loncat_none');
+    $options[''] = $this->EE->lang->line('loncat_none');
     
 		foreach($cats as $val)
 		{

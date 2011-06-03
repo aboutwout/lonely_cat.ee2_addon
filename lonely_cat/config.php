@@ -2,7 +2,7 @@
 
 if (! defined('LONCAT_VERSION'))
 {
-    define('LONCAT_VERSION', '1.0');
+    define('LONCAT_VERSION', '1.1');
     define('LONCAT_NAME', 'Lonely Cat');
     define('LONCAT_DESCRIPTION', 'Add a single category to an entry through a simple dropdown.');
 }
