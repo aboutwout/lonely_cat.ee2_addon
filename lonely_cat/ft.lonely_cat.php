@@ -26,7 +26,6 @@ class Lonely_cat_ft extends EE_Fieldtype {
     $this->EE->load->library('api');
     $this->EE->api->instantiate(array('channel_categories', 'channel_structure'));
 
-
     $this->channel_id = $this->EE->input->get_post('channel_id');
 
     // If there is no category set, fetch the default category if set.
@@ -35,17 +34,30 @@ class Lonely_cat_ft extends EE_Fieldtype {
       $data = $this->EE->api_channel_structure->get_channel_info($this->channel_id)->row('deft_category');
     }
   
+    $tmp = array();
 	  $options = array();
 		$cats = $this->_fetch_categories();  
 
     $cat_group = NULL;
  		 		
-    $options[''] = $this->EE->lang->line('loncat_none');
-    
 		foreach($cats as $val)
 		{
 			$indent = ($val['parent_id'] != 1) ? repeater(NBS.NBS.NBS, $val['parent_id']) : '';
-			$options[$val['cat_group_name']][$val['cat_id']] = $indent.$val['cat_name'];
+			$tmp[$val['cat_group_name']][$val['cat_id']] = $indent.$val['cat_name'];
+		}
+		
+		$options[''] = $this->EE->lang->line('loncat_none');
+		
+		if(count($tmp) === 1)
+		{
+		  foreach($tmp[$val['cat_group_name']] as $cat_id => $cat)
+		  {
+  		  $options[$cat_id] = $cat;
+		  }
+		}
+		else
+		{
+		  $options = array_merge($options, $tmp);
 		}
 
 	  return form_dropdown($this->field_name, $options, $data);
