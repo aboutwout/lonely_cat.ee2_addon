@@ -17,6 +17,8 @@ class Lonely_cat_ft extends EE_Fieldtype {
 		'version'	=> LONCAT_VERSION
 	);
 	
+	private $_parents = array();
+	
 	// --------------------------------------------------------------------
 	
 	function display_field($data)
@@ -60,7 +62,33 @@ class Lonely_cat_ft extends EE_Fieldtype {
 		  $options = array_merge($options, $tmp);
 		}
 
-	  return form_dropdown($this->field_name, $options, $data);
+    $r = '<select id="'.$this->field_name.'" name="'.$this->field_name.'">';
+    
+    if (count($this->_parents) === 0)
+    {
+       return form_dropdown($this->field_name, $options, $data);
+    }
+    
+    foreach ($options as $val => $opt)
+    {
+      $r .= '<option value="'.$val.'"';
+      
+      if (in_array($val, $this->_parents))
+      {
+         $r .= ' disabled="disabled"';
+      }
+      
+      if ($val === $data)
+      {
+        $r .= ' selected="selected"';
+      }
+      
+      $r .= '>'.$opt.'</option>';        
+    }
+    
+    $r .= '</select>';
+    
+    return $r;
 		
 	}
 	
@@ -158,7 +186,7 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	  {
 	    $cats = $this->EE->api_channel_categories->categories;
 	  }
-
+    
     foreach ($cats as $cat_id => $cat)
     {
       $cats[$cat[0]] = array(
@@ -168,8 +196,26 @@ class Lonely_cat_ft extends EE_Fieldtype {
         'cat_group_name' => $cat[3],
         'parent_id' => $cat[5]
       );
+      
+      $cat_groups[] =  $cat[2];
     }
-  
+
+    
+    $cat_groups = array_unique($cat_groups);
+    
+    if (count($cat_groups) > 0)
+    {
+      $pars = $this->EE->db->group_by('parent_id')->select('parent_id')->where_in('group_id', $cat_groups)->where('site_id', $this->EE->config->item('site_id'))->where('parent_id !=', 0)->get('categories');
+
+      if ($pars->num_rows() > 0)
+      {
+        foreach ($pars->result() as $par)
+        {
+          $this->_parents[] = $par->parent_id;
+        }
+      }
+      
+    }
 	  
 	  return $cats;
 

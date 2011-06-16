@@ -1,10 +1,12 @@
-# Lonely Cat
+# Lonely Cat (alt)
 
 A category dropdown that will only allow you to select 1 category for an entry.
 
 ### Info
 
 Developed by Wouter Vervloet, http://www.baseworks.nl/
+
+**This version was specifically made for [Christopher Kennedy](http://twitter.com/#!/onebrightlight/). It disallows you to select parent categories.**
 
 
 ### Installation
