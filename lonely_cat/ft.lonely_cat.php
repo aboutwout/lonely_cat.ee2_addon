@@ -71,19 +71,19 @@ class Lonely_cat_ft extends EE_Fieldtype {
     
     foreach ($options as $val => $opt)
     {
-      $r .= '<option value="'.$val.'"';
-      
-      if (in_array($val, $this->_parents))
+      if (is_array($opt))
       {
-         $r .= ' disabled="disabled"';
+        $r .= '<optgroup label="'.$val.'">';
+        foreach ($opt as $val2 => $opt2)
+        {
+          $r .= $this->_form_option($val2, $opt2, $data);
+        }
+        $r .= '</optgroup>';
       }
-      
-      if ($val === $data)
+      else
       {
-        $r .= ' selected="selected"';
+        $r .= $this->_form_option($val, $opt, $data);
       }
-      
-      $r .= '>'.$opt.'</option>';        
     }
     
     $r .= '</select>';
@@ -91,6 +91,26 @@ class Lonely_cat_ft extends EE_Fieldtype {
     return $r;
 		
 	}
+
+  function _form_option($val='', $opt='', $data='')
+  {
+    $r = '';
+    $r .= '<option value="'.$val.'"';
+    
+    if (in_array($val, $this->_parents))
+    {
+       $r .= ' disabled="disabled"';
+    }
+    
+    if ($val === $data)
+    {
+      $r .= ' selected="selected"';
+    }
+    
+    $r .= '>'.$opt.'</option>';        
+    
+    return $r;
+  }
 	
 	function replace_category_name($data, $params = array(), $tagdata = FALSE)
 	{    
