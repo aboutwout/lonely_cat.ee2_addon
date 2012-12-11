@@ -90,7 +90,6 @@ class Lonely_cat_ft extends EE_Fieldtype {
 
 	function replace_category_id($data, $params = array(), $tagdata = FALSE)
 	{
-	  return 'cat_id';
     if ( ! $data) return '';
 		return $data;
 	}
