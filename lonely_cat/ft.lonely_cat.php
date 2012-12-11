@@ -28,6 +28,20 @@ class Lonely_cat_ft extends EE_Fieldtype {
 
     $this->channel_id = $this->EE->input->get_post('channel_id');
 
+    // If no category is set, check if one has
+    // already been set in the categories array
+    if ( ! $data AND isset($this->EE->api_channel_categories->categories))
+    {
+      foreach ($this->EE->api_channel_categories->categories as $cat_id => $cat)
+      {
+        if ($cat[4])
+        {
+          $data = $cat[0];
+          break;
+        }
+      }
+    }
+    
     // If there is no category set, fetch the default category if set.
     if ( ! $data && $this->channel_id)
     {
@@ -65,7 +79,7 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	}
 	
 	function replace_category_name($data, $params = array(), $tagdata = FALSE)
-	{    
+	{ 
     if ( ! $data) return '';
     
     $category_info = $this->_get_category($data);
@@ -76,6 +90,7 @@ class Lonely_cat_ft extends EE_Fieldtype {
 
 	function replace_category_id($data, $params = array(), $tagdata = FALSE)
 	{
+	  return 'cat_id';
     if ( ! $data) return '';
 		return $data;
 	}
@@ -177,6 +192,9 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	
 	function _get_category($cat_id=0)
 	{
+	  $this->EE->api->instantiate('channel_categories');
+	  debug($this->EE->api_channel_categories);
+    
 	  if ( ! isset($this->EE->session->cache[__CLASS__][$cat_id]))
     {
       $query = $this->EE->db->where('cat_id', $cat_id)->get('categories');
