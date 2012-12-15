@@ -158,6 +158,76 @@ class Lonely_cat_ft extends EE_Fieldtype {
     return $data;
 	}
 	
+	public function display_settings($data=array())
+	{
+		$this->EE->lang->loadfile('lonely_cat');
+		$this->EE->table->add_row(
+			lang('apply_existing_entries', 'apply_existing_entries'),
+			form_checkbox('apply_existing_entries', 'y', 0).NBS.'Yes'
+		);
+	}
+	
+	public function save_settings($data)
+	{
+	  if ($this->EE->input->post('apply_existing_entries') == 'y')
+	  {
+	    $this->apply_existing_entries = TRUE;
+	  }
+	}
+	
+	public function post_save_settings($data=array())
+	{
+	  if ($this->apply_existing_entries === TRUE)
+	  {
+	    $channels = array();
+	    $group_id = $data['group_id'];
+	    $field_id = $data['field_id'];
+	    $field_name = 'field_id_'.$field_id;
+	    
+      $site_id = $data['site_id'];
+      
+      $c_query = $this->EE->db
+        ->select('channel_id')
+        ->where('field_group', $group_id)
+        ->where('site_id', $site_id)
+        ->get('channels');
+      foreach ($c_query->result() as $row)
+      {
+        $channels[] = $row->channel_id;
+      }
+      
+      $e_query = $this->EE->db
+        ->from('channel_data cd')
+        ->join('category_posts cp', 'cd.entry_id=cp.entry_id')
+        ->select('cd.'.$field_name.', cp.*')
+        ->where_in('cd.channel_id', $channels)
+        ->where('cd.site_id', $site_id)
+        ->get();
+        
+      $catdata = array();
+      
+      foreach ($e_query->result() as $row)
+      {
+        if ($row->$field_name == $row->cat_id) continue;
+        
+        $catdata[] = array(
+          'entry_id' => $row->entry_id,
+          $field_name => $row->cat_id
+        );
+      }
+      
+      if (count($catdata) > 0)
+      {
+        $this->EE->db->update_batch('channel_data', $catdata, 'entry_id');
+        $this->EE->session->set_flashdata('message_success', $this->EE->db->affected_rows().' entries updated.');
+      }
+      else
+      {
+        $this->EE->session->set_flashdata('message_success', '0 entries updated.');
+      }
+	  }
+	}
+	
 	function _fetch_categories()
 	{ 
 	  
