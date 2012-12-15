@@ -264,7 +264,6 @@ class Lonely_cat_ft extends EE_Fieldtype {
 	function _get_category($cat_id=0)
 	{
 	  $this->EE->api->instantiate('channel_categories');
-	  debug($this->EE->api_channel_categories);
     
 	  if ( ! isset($this->EE->session->cache[__CLASS__][$cat_id]))
     {
