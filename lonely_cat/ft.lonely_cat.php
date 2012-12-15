@@ -17,6 +17,8 @@ class Lonely_cat_ft extends EE_Fieldtype {
 		'version'	=> LONCAT_VERSION
 	);
 	
+	var $apply_existing_entries = FALSE;
+	
 	// --------------------------------------------------------------------
 	
 	function display_field($data)
